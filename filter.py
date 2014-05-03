@@ -12,17 +12,33 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import sys
+import sys, getopt
 
 from util import urljoin, get_all_notebooks
 
 from workflow import Workflow, ICON_WEB, ICON_WARNING
 
+def sort_most_recent(nblist):
+    # Sort: Notebooks only, most recent first.
+    r = [nb for nb in nblist if nb['type'] == 'notebook']
+    r.sort(key=lambda nb: nb['last_modified'], reverse=True)
+    return r
+
+def add_root_item(wf, url):
+    # Make the first item a link to the root path
+    nburl = urljoin(url, '')
+    wf.add_item(title='Browse all notebooks',
+            subtitle=nburl, arg=nburl, valid=True, icon=ICON_WEB)
+
+
 def main(wf):
-    if len(wf.args):
-        query = wf.args[0]
+    opts, args = getopt.getopt(wf.args, 'r')
+    if args:
+        query = args[0]
     else:
         query = None
+
+    sort_by_modtime = '-r' in dict(opts)
 
     url = wf.settings.get('server', 'http://127.0.0.1:8888')
 
@@ -34,17 +50,19 @@ def main(wf):
     if query:
         nblist = wf.filter(query, nblist, 
                 key=lambda nb: nb['path'] + '/' + nb['name'] )
-    else:
-        # Return all notebooks, but make the first item a link to the root path
-        nburl = urljoin(url, '')
-        wf.add_item(title='Browse all notebooks',
-                subtitle=nburl, arg=nburl, valid=True, icon=ICON_WEB)
+    elif not sort_by_modtime:
+        add_root_item(wf, url)
 
     if not nblist:
-         wf.add_item('No notebooks found', icon=ICON_WARNING,
+        add_root_item(wf, url)
+        wf.add_item('No notebooks found', icon=ICON_WARNING,
                  subtitle='On server %s' % url)
-         wf.send_feedback()
-         return 0
+        wf.send_feedback()
+        return 0
+
+    if sort_by_modtime:
+        # Notebooks only, most recent first.
+        nblist = sort_most_recent(nblist)
 
     for nb in nblist:
         # We use urljoin() twice to get the right behavior when path is blank
