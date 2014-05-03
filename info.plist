@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>edu.upenn.seas.nkeim.ipynbworkflow</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>1C90E17F-C2A1-437C-AFFE-789DF0F57EA7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B17ED7BE-6939-446B-8CF6-14D4AF962CAB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>655FAEFB-0BC1-4DC5-8617-7CA7525DE465</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
+				<key>modifiersubtext</key>
+				<string>Paste URL into frontmost application</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>AF74C92D-7504-40AF-8B71-282EACE0E98A</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Paste Markdown link, to refer to this notebook from others</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>DED1BC4C-7856-43F5-80F6-6979068FDDC1</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Paste notebook name into frontmost application</string>
+			</dict>
+		</array>
+		<key>AF74C92D-7504-40AF-8B71-282EACE0E98A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3E868192-1025-4BA5-8D5F-F301F83D0867</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>B3AF3553-F775-44EC-9555-F99ED0D2E501</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>DED1BC4C-7856-43F5-80F6-6979068FDDC1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>94DA984F-5395-463C-9D15-F5BD5D0D67A3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Nathan Keim</string>
+	<key>description</key>
+	<string>Search notebook titles on an IPython notebook server</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>IPython Notebooks</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>plusspaces</key>
+				<false/>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>B17ED7BE-6939-446B-8CF6-14D4AF962CAB</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>655FAEFB-0BC1-4DC5-8617-7CA7525DE465</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>keyword</key>
+				<string>nb</string>
+				<key>runningsubtext</key>
+				<string>Retrieving notebook list…</string>
+				<key>script</key>
+				<string>python filter.py "{query}"</string>
+				<key>subtext</key>
+				<string>Use "nbserver" to change server URL</string>
+				<key>title</key>
+				<string>Search IPython notebook server</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>1C90E17F-C2A1-437C-AFFE-789DF0F57EA7</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>import sys
+
+from util import urljoin
+
+nburl = "{query}"
+nbname = nburl.split('/')[-1]
+if nbname.endswith('.ipynb'):
+	nbname = nbname[:-len('.ipynb')]
+
+nbpath = '/' + urljoin(*nburl.split('/')[3:])
+
+sys.stdout.write('[`%s`](%s)' % (nbname, nbpath))</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>AF74C92D-7504-40AF-8B71-282EACE0E98A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>3E868192-1025-4BA5-8D5F-F301F83D0867</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>import sys
+
+from util import urljoin
+
+nburl = "{query}"
+
+# Just the part of the path starting from the notebooks root
+nbpath = urljoin(*nburl.split('/')[4:])
+
+if nbpath.endswith('.ipynb'):
+    nbpath = nbpath[:-len('.ipynb')]
+
+sys.stdout.write(nbpath)</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>DED1BC4C-7856-43F5-80F6-6979068FDDC1</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>94DA984F-5395-463C-9D15-F5BD5D0D67A3</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>python set_server.py "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>nbserver</string>
+				<key>subtext</key>
+				<string>Supply a URL, e.g. http://localhost:8888</string>
+				<key>text</key>
+				<string>Set IPython notebook server</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B3AF3553-F775-44EC-9555-F99ED0D2E501</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>This workflow lets you search for notebooks (and directories) available on your IPython notebook server, and open them in your web browser. It does not work with IPython versions earlier than 2.0.
+
+The default action is to open the notebook or directory in a web browser, but pressing Shift-Return pastes the notebook URL into the frontmost application. Option-Return pastes a formatted Markdown link, suitable for linking to that notebook from another notebook on the same server.
+
+Note that this workflow actually queries the server, and so can search notebook servers running on other computers.
+
+Configuration
+-------------
+
+The default behavior is to query the IPython notebook server at http://127.0.0.1:8888/ (where it is usually found). To use a different server, use the "nbserver" keyword in the Alfred search box.
+
+For example, to connect to an IPython notebook server running at port 8899 on your computer, type
+
+nbserver http://127.0.0.1/8899
+
+and press Return.
+
+Caveat
+------
+
+For performance reasons, the list of notebooks on the server is cached for 30 seconds. Therefore, it can take up to 30 seconds for a new or renamed notebook to show up in these results.
+
+
+Copyright 2013 Nathan C. Keim
+
+Licensed under the Apache License, Version 2.0. For details, see filter.py in the source code.
+
+This workflow is built with the Alfred-Workflow package: https://github.com/deanishe/alfred-workflow
+
+Official IPython site: http://ipython.org</string>
+	<key>uidata</key>
+	<dict>
+		<key>1C90E17F-C2A1-437C-AFFE-789DF0F57EA7</key>
+		<dict>
+			<key>ypos</key>
+			<real>160</real>
+		</dict>
+		<key>3E868192-1025-4BA5-8D5F-F301F83D0867</key>
+		<dict>
+			<key>ypos</key>
+			<real>280</real>
+		</dict>
+		<key>655FAEFB-0BC1-4DC5-8617-7CA7525DE465</key>
+		<dict>
+			<key>ypos</key>
+			<real>160</real>
+		</dict>
+		<key>94DA984F-5395-463C-9D15-F5BD5D0D67A3</key>
+		<dict>
+			<key>ypos</key>
+			<real>410</real>
+		</dict>
+		<key>AF74C92D-7504-40AF-8B71-282EACE0E98A</key>
+		<dict>
+			<key>ypos</key>
+			<real>280</real>
+		</dict>
+		<key>B17ED7BE-6939-446B-8CF6-14D4AF962CAB</key>
+		<dict>
+			<key>ypos</key>
+			<real>30</real>
+		</dict>
+		<key>B3AF3553-F775-44EC-9555-F99ED0D2E501</key>
+		<dict>
+			<key>ypos</key>
+			<real>560</real>
+		</dict>
+		<key>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</key>
+		<dict>
+			<key>ypos</key>
+			<real>560</real>
+		</dict>
+		<key>DED1BC4C-7856-43F5-80F6-6979068FDDC1</key>
+		<dict>
+			<key>ypos</key>
+			<real>410</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/nkeim</string>
+</dict>
+</plist>
