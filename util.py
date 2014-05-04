@@ -23,7 +23,7 @@ def get_nblist(url, path=''):
     try:
         resp = web.get(urljoin(url, 'api/notebooks', path))
     except URLError:
-        raise URLError('Unable to reach server %s' % url)
+        raise URLError('Unable to reach %s. Try the "nbserver" keyword.' % url)
     resp.raise_for_status()
     return resp.json()
 

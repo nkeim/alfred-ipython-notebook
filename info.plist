@@ -43,6 +43,17 @@
 				<string>Paste notebook name into frontmost application</string>
 			</dict>
 		</array>
+		<key>A21FAD54-4BBD-4D2A-9F9D-FB71D4D10A9A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C0238001-B125-420A-8720-919EE4AFFCC2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>AF74C92D-7504-40AF-8B71-282EACE0E98A</key>
 		<array>
 			<dict>
@@ -59,6 +70,17 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>C0238001-B125-420A-8720-919EE4AFFCC2</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -151,7 +173,7 @@
 				<key>runningsubtext</key>
 				<string>Retrieving notebook list…</string>
 				<key>script</key>
-				<string>python filter.py "{query}"</string>
+				<string>python filter.py -- "{query}"</string>
 				<key>subtext</key>
 				<string>Use "nbserver" to change server URL</string>
 				<key>title</key>
@@ -195,7 +217,7 @@
 				<key>runningsubtext</key>
 				<string>Retrieving notebook list…</string>
 				<key>script</key>
-				<string>python filter.py -r "{query}"</string>
+				<string>python filter.py -r -- "{query}"</string>
 				<key>subtext</key>
 				<string>Use "nbserver" to change server URL</string>
 				<key>title</key>
@@ -302,6 +324,27 @@ sys.stdout.write(nbpath)</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>nbserver</string>
+				<key>subtext</key>
+				<string>Supply argument, e.g. http://localhost:8888</string>
+				<key>text</key>
+				<string>Set IPython notebook server URL</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B3AF3553-F775-44EC-9555-F99ED0D2E501</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
@@ -319,21 +362,63 @@ sys.stdout.write(nbpath)</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>python newnb.py "{query}"</string>
+				<key>type</key>
 				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C0238001-B125-420A-8720-919EE4AFFCC2</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>127</integer>
 				<key>keyword</key>
-				<string>nbserver</string>
+				<string>nbnew</string>
+				<key>runningsubtext</key>
+				<string>Finding directories...</string>
+				<key>script</key>
+				<string>python filter.py -d -- "{query}"</string>
 				<key>subtext</key>
-				<string>Supply a URL, e.g. http://localhost:8888</string>
-				<key>text</key>
-				<string>Set IPython notebook server</string>
+				<string>Create a new untitled notebook in a directory</string>
+				<key>title</key>
+				<string>New notebook</string>
+				<key>type</key>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>B3AF3553-F775-44EC-9555-F99ED0D2E501</string>
+			<string>A21FAD54-4BBD-4D2A-9F9D-FB71D4D10A9A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>open "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -341,7 +426,9 @@ sys.stdout.write(nbpath)</string>
 	<key>readme</key>
 	<string>This workflow lets you search for notebooks (and directories) available on your IPython notebook server, and open them in your web browser. It does not work with IPython versions earlier than 2.0.
 
-The "nb" keyword searches notebook and directory titles, sorting alphabetically. The "nbr" keyword searches only notebooks, sorting by modification date.
+- The "nb" keyword searches notebook and directory titles, sorting alphabetically. 
+- The "nbr" keyword searches only notebooks, with most Recent ones at the top. 
+- The "nbnew" keyword brings up a new untitled notebook in a directory of your choosing.
 
 The default action is to open the notebook or directory in a web browser, but pressing Shift-Return pastes the notebook URL into the frontmost application. Option-Return pastes a formatted Markdown link, suitable for linking to that notebook from another notebook on the same server.
 
@@ -378,6 +465,11 @@ Official IPython site: http://ipython.org</string>
 			<key>ypos</key>
 			<real>90</real>
 		</dict>
+		<key>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</key>
+		<dict>
+			<key>ypos</key>
+			<real>680</real>
+		</dict>
 		<key>3E868192-1025-4BA5-8D5F-F301F83D0867</key>
 		<dict>
 			<key>ypos</key>
@@ -393,6 +485,11 @@ Official IPython site: http://ipython.org</string>
 			<key>ypos</key>
 			<real>410</real>
 		</dict>
+		<key>A21FAD54-4BBD-4D2A-9F9D-FB71D4D10A9A</key>
+		<dict>
+			<key>ypos</key>
+			<real>680</real>
+		</dict>
 		<key>AF74C92D-7504-40AF-8B71-282EACE0E98A</key>
 		<dict>
 			<key>ypos</key>
@@ -407,6 +504,11 @@ Official IPython site: http://ipython.org</string>
 		<dict>
 			<key>ypos</key>
 			<real>560</real>
+		</dict>
+		<key>C0238001-B125-420A-8720-919EE4AFFCC2</key>
+		<dict>
+			<key>ypos</key>
+			<real>680</real>
 		</dict>
 		<key>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</key>
 		<dict>

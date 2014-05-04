@@ -24,21 +24,28 @@ def sort_most_recent(nblist):
     r.sort(key=lambda nb: nb['last_modified'], reverse=True)
     return r
 
-def add_root_item(wf, url):
+def add_root_item(wf, url, directories_only=False):
     # Make the first item a link to the root path
     nburl = urljoin(url, '')
-    wf.add_item(title='Browse all notebooks',
-            subtitle=nburl, arg=nburl, valid=True, icon=ICON_WEB)
+    if directories_only:
+        wf.add_item(title='/',
+                subtitle='New notebook at ' + nburl, 
+                arg='', valid=True, icon=ICON_WEB)
+    else:
+        wf.add_item(title='Browse all notebooks',
+                subtitle=nburl, arg=nburl, valid=True, icon=ICON_WEB)
 
 
 def main(wf):
-    opts, args = getopt.getopt(wf.args, 'r')
+    optslist, args = getopt.getopt(wf.args, 'rd')
+    opts = dict(optslist)
     if args:
         query = args[0]
     else:
         query = None
 
-    sort_by_modtime = '-r' in dict(opts)
+    sort_by_modtime = '-r' in opts
+    directories_only = '-d' in opts
 
     url = wf.settings.get('server', 'http://127.0.0.1:8888')
 
@@ -47,34 +54,48 @@ def main(wf):
     # Retrieve directory and cache for 30 seconds
     nblist = wf.cached_data('nblist', get_nb, max_age=30)
 
+    # Filtering by query
     if query:
         nblist = wf.filter(query, nblist, 
                 key=lambda nb: nb['path'] + '/' + nb['name'] )
+        # No matches
+        if not nblist:
+            add_root_item(wf, url, directories_only=directories_only)
+            wf.add_item('No notebooks found', icon=ICON_WARNING,
+                     subtitle='On server %s' % url)
+            wf.send_feedback()
+            return 0
     elif not sort_by_modtime:
-        add_root_item(wf, url)
+        # If no query and alphabetical sorting, show root.
+        add_root_item(wf, url, directories_only=directories_only)
 
-    if not nblist:
-        add_root_item(wf, url)
-        wf.add_item('No notebooks found', icon=ICON_WARNING,
-                 subtitle='On server %s' % url)
-        wf.send_feedback()
-        return 0
-
+    # Most recent first
     if sort_by_modtime:
         # Notebooks only, most recent first.
         nblist = sort_most_recent(nblist)
+    elif directories_only:
+        nblist = [nb for nb in nblist if nb['type'] == 'directory']
 
+    # Build results
     for nb in nblist:
         # We use urljoin() twice to get the right behavior when path is blank
-        nburl = urljoin(url, 'notebooks', urljoin(nb['path'], nb['name']))
         if nb['name'].endswith('.ipynb'):
             nbname = urljoin(nb['path'], nb['name'][:-len('.ipynb')])
         elif nb['type'] == 'directory':
-            nbname = nb['name'] + '/'
+            nbname = urljoin(nb['path'], nb['name']) + '/'
         else:
             nbname = nb['name']
+
+        nb_user_url = urljoin(url, 'notebooks', urljoin(nb['path'], nb['name']))
+        if directories_only:
+            # We return only the path information, since newnb.py has to use the API anyhow.
+            nburl = urljoin(nb['path'], nb['name']) + '/'
+            subtitle = 'New notebook at ' + nb_user_url
+        else:
+            nburl = nb_user_url
+            subtitle = nb_user_url
         wf.add_item(title=nbname,
-                subtitle=nburl,
+                subtitle=subtitle,
                 arg=nburl,
                 valid=True,
                 icon=ICON_WEB)
