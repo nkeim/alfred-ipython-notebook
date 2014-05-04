@@ -18,26 +18,22 @@ from util import urljoin, get_all_notebooks
 
 from workflow import Workflow, ICON_WEB, ICON_WARNING
 
-def sort_most_recent(nblist):
-    # Sort: Notebooks only, most recent first.
-    r = [nb for nb in nblist if nb['type'] == 'notebook']
-    r.sort(key=lambda nb: nb['last_modified'], reverse=True)
-    return r
-
-def add_root_item(wf, url, directories_only=False):
+def add_root_item(wf, url, mode=None):
     # Make the first item a link to the root path
     nburl = urljoin(url, '')
-    if directories_only:
+    if mode == 'new':
         wf.add_item(title='/',
                 subtitle='New notebook at ' + nburl, 
                 arg='', valid=True, icon=ICON_WEB)
+    elif mode == 'copy':
+        return # Can't copy the root directory
     else:
         wf.add_item(title='Browse all notebooks',
                 subtitle=nburl, arg=nburl, valid=True, icon=ICON_WEB)
 
 
 def main(wf):
-    optslist, args = getopt.getopt(wf.args, 'rd')
+    optslist, args = getopt.getopt(wf.args, 'rdc')
     opts = dict(optslist)
     if args:
         query = args[0]
@@ -45,7 +41,12 @@ def main(wf):
         query = None
 
     sort_by_modtime = '-r' in opts
-    directories_only = '-d' in opts
+    if '-d' in opts:
+        mode = 'new'
+    elif '-c' in opts:
+        mode = 'copy'
+    else:
+        mode = None
 
     url = wf.settings.get('server', 'http://127.0.0.1:8888')
 
@@ -60,26 +61,30 @@ def main(wf):
                 key=lambda nb: nb['path'] + '/' + nb['name'] )
         # No matches
         if not nblist:
-            add_root_item(wf, url, directories_only=directories_only)
+            add_root_item(wf, url, mode=mode)
             wf.add_item('No notebooks found', icon=ICON_WARNING,
                      subtitle='On server %s' % url)
             wf.send_feedback()
             return 0
     elif not sort_by_modtime:
         # If no query and alphabetical sorting, show root.
-        add_root_item(wf, url, directories_only=directories_only)
+        add_root_item(wf, url, mode=mode)
 
-    # Most recent first
-    if sort_by_modtime:
-        # Notebooks only, most recent first.
-        nblist = sort_most_recent(nblist)
-    elif directories_only:
+    if sort_by_modtime or mode == 'copy':
+        # Notebooks only
+        nblist = [nb for nb in nblist if nb['type'] == 'notebook']
+    elif mode == 'new':
+        # Directories only
         nblist = [nb for nb in nblist if nb['type'] == 'directory']
 
-    # Build results
+    if sort_by_modtime:
+        # Most recent first
+        nblist.sort(key=lambda nb: nb['last_modified'], reverse=True)
+
+    # Build results output
     for nb in nblist:
-        # We use urljoin() twice to get the right behavior when path is blank
         if nb['name'].endswith('.ipynb'):
+            # We use urljoin() twice to get the right behavior when path is empty
             nbname = urljoin(nb['path'], nb['name'][:-len('.ipynb')])
         elif nb['type'] == 'directory':
             nbname = urljoin(nb['path'], nb['name']) + '/'
@@ -87,10 +92,13 @@ def main(wf):
             nbname = nb['name']
 
         nb_user_url = urljoin(url, 'notebooks', urljoin(nb['path'], nb['name']))
-        if directories_only:
+        if mode == 'new':
             # We return only the path information, since newnb.py has to use the API anyhow.
             nburl = urljoin(nb['path'], nb['name']) + '/'
             subtitle = 'New notebook at ' + nb_user_url
+        elif mode == 'copy':
+            nburl = urljoin(nb['path'], nb['name']) + '/'
+            subtitle = 'Make a copy of ' + nb_user_url
         else:
             nburl = nb_user_url
             subtitle = nb_user_url

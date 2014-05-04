@@ -43,11 +43,33 @@
 				<string>Paste notebook name into frontmost application</string>
 			</dict>
 		</array>
+		<key>61355314-08DC-4EB0-BDAA-5DB6FA82D440</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A38E778D-808B-4771-926B-FF4BE10C89AB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>A21FAD54-4BBD-4D2A-9F9D-FB71D4D10A9A</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>C0238001-B125-420A-8720-919EE4AFFCC2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>A38E778D-808B-4771-926B-FF4BE10C89AB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -81,6 +103,28 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>C358652F-CEFC-4924-BAE6-593A896C3ED9</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A38E778D-808B-4771-926B-FF4BE10C89AB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>294A41D0-150A-451C-9052-3780BBCD8B89</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -238,13 +282,13 @@
 			<key>config</key>
 			<dict>
 				<key>escaping</key>
-				<integer>127</integer>
+				<integer>0</integer>
 				<key>script</key>
 				<string>import sys
 
 from util import urljoin
 
-nburl = "{query}"
+nburl = r"""{query}"""
 nbname = nburl.split('/')[-1]
 if nbname.endswith('.ipynb'):
 	nbname = nbname[:-len('.ipynb')]
@@ -281,13 +325,13 @@ sys.stdout.write('[`%s`](%s)' % (nbname, nbpath))</string>
 			<key>config</key>
 			<dict>
 				<key>escaping</key>
-				<integer>127</integer>
+				<integer>0</integer>
 				<key>script</key>
 				<string>import sys
 
 from util import urljoin
 
-nburl = "{query}"
+nburl = r"""{query}"""
 
 # Just the part of the path starting from the notebooks root
 nbpath = urljoin(*nburl.split('/')[4:])
@@ -348,7 +392,9 @@ sys.stdout.write(nbpath)</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>python set_server.py "{query}"</string>
+				<string>python set_server.py "{query}"
+
+echo -n "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -362,12 +408,41 @@ sys.stdout.write(nbpath)</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>escaping</key>
-				<integer>127</integer>
-				<key>script</key>
-				<string>python newnb.py "{query}"</string>
-				<key>type</key>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>output</key>
 				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>IPython notebook server set to "{query}"</string>
+				<key>title</key>
+				<string>Configured notebook server</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>294A41D0-150A-451C-9052-3780BBCD8B89</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>import sys, subprocess
+
+query = r"""{query}"""
+
+sys.exit(subprocess.call(['python', 'newnb.py', '--', query]))</string>
+				<key>type</key>
+				<integer>3</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -422,6 +497,85 @@ sys.stdout.write(nbpath)</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>import sys, subprocess
+
+query = r"""{query}"""
+
+sys.exit(subprocess.call(['python', 'newnb.py', '-c', '--', query]))</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>A38E778D-808B-4771-926B-FF4BE10C89AB</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>keyword</key>
+				<string>nbcopy</string>
+				<key>runningsubtext</key>
+				<string>Retrieving notebook list…</string>
+				<key>script</key>
+				<string>python filter.py -c -- "{query}"</string>
+				<key>subtext</key>
+				<string>Opens a new copy of the notebook within the same directory</string>
+				<key>title</key>
+				<string>Find notebook and make a copy</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>61355314-08DC-4EB0-BDAA-5DB6FA82D440</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>keyword</key>
+				<string>nbcopyr</string>
+				<key>runningsubtext</key>
+				<string>Retrieving notebook list…</string>
+				<key>script</key>
+				<string>python filter.py -c -r -- "{query}"</string>
+				<key>subtext</key>
+				<string>Open a new copy of the notebook within the same directory</string>
+				<key>title</key>
+				<string>Find a recent notebook and make a copy</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>C358652F-CEFC-4924-BAE6-593A896C3ED9</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>This workflow lets you search for notebooks (and directories) available on your IPython notebook server, and open them in your web browser. It does not work with IPython versions earlier than 2.0.
@@ -429,6 +583,8 @@ sys.stdout.write(nbpath)</string>
 - The "nb" keyword searches notebook and directory titles, sorting alphabetically. 
 - The "nbr" keyword searches only notebooks, with most Recent ones at the top. 
 - The "nbnew" keyword brings up a new untitled notebook in a directory of your choosing.
+- The "nbcopy" keyword creates a copy of a notebook in the same directory.
+- The "nbcopyr" keyword is like "nbcopy", but shows the most Recent ones at the top.
 
 The default action is to open the notebook or directory in a web browser, but pressing Shift-Return pastes the notebook URL into the frontmost application. Option-Return pastes a formatted Markdown link, suitable for linking to that notebook from another notebook on the same server.
 
@@ -439,9 +595,11 @@ Configuration
 
 The default behavior is to query the IPython notebook server at http://127.0.0.1:8888/ (where it is usually found). To use a different server, use the "nbserver" keyword in the Alfred search box.
 
+The URL is the same one reported by the IPython notebook server when it starts up, or that you type into your web browser. 
+
 For example, to connect to an IPython notebook server running at port 8899 on your computer, type
 
-nbserver http://127.0.0.1/8899
+nbserver http://127.0.0.1:8899
 
 and press Return.
 
@@ -465,6 +623,11 @@ Official IPython site: http://ipython.org</string>
 			<key>ypos</key>
 			<real>90</real>
 		</dict>
+		<key>294A41D0-150A-451C-9052-3780BBCD8B89</key>
+		<dict>
+			<key>ypos</key>
+			<real>560</real>
+		</dict>
 		<key>39A06F56-F79B-4C0B-BF6F-A04DC88038DC</key>
 		<dict>
 			<key>ypos</key>
@@ -474,6 +637,11 @@ Official IPython site: http://ipython.org</string>
 		<dict>
 			<key>ypos</key>
 			<real>260</real>
+		</dict>
+		<key>61355314-08DC-4EB0-BDAA-5DB6FA82D440</key>
+		<dict>
+			<key>ypos</key>
+			<real>800</real>
 		</dict>
 		<key>655FAEFB-0BC1-4DC5-8617-7CA7525DE465</key>
 		<dict>
@@ -489,6 +657,11 @@ Official IPython site: http://ipython.org</string>
 		<dict>
 			<key>ypos</key>
 			<real>680</real>
+		</dict>
+		<key>A38E778D-808B-4771-926B-FF4BE10C89AB</key>
+		<dict>
+			<key>ypos</key>
+			<real>800</real>
 		</dict>
 		<key>AF74C92D-7504-40AF-8B71-282EACE0E98A</key>
 		<dict>
@@ -509,6 +682,11 @@ Official IPython site: http://ipython.org</string>
 		<dict>
 			<key>ypos</key>
 			<real>680</real>
+		</dict>
+		<key>C358652F-CEFC-4924-BAE6-593A896C3ED9</key>
+		<dict>
+			<key>ypos</key>
+			<real>920</real>
 		</dict>
 		<key>C47FB4B4-7E7A-4612-B7AE-CD71B1096736</key>
 		<dict>

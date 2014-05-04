@@ -12,25 +12,33 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import sys
+import sys, json, getopt
 
+from urllib import quote
 from urllib2 import URLError
 
 from util import urljoin, get_nblist
 from workflow import Workflow, web
 
-def newnb(url, path):
+def newnb(url, path, copy=None):
     """Create new untitled notebook at 'path'
     
     Server base URL is 'url'
 
     Returns name of the new notebook file.
     """
+    # See IPython/html/services/notebooks/handlers.py for API details.
+
     # Compare directory contents before and after new notebook creation.
     names = [nb['name'] for nb in get_nblist(url, path) if nb['type'] == 'notebook']
-    post_url = urljoin(url, 'api/notebooks', path).strip('/')
+
+    post_url = urljoin(url, 'api/notebooks', quote(path)).strip('/')
+    if copy is not None:
+        data = json.dumps({'copy_from': copy})
+    else:
+        data = ''
     try:
-        resp = web.post(post_url, data='')
+        resp = web.post(post_url, data=data)
     except URLError:
         raise URLError('Unable to reach %s. Try the "nbserver" keyword.' % url)
     resp.raise_for_status()
@@ -44,13 +52,26 @@ def newnb(url, path):
     return newnbname
 
 def main(wf):
-    path = wf.args[0]
+    optslist, args = getopt.getopt(wf.args, 'c')
+    opts = dict(optslist)
+    path = args[0]
 
     url = wf.settings.get('server', 'http://127.0.0.1:8888')
 
-    nbname = newnb(url, path)
-    nb_user_url = urljoin(url, 'notebooks', urljoin(path, nbname))
-    #sys.stderr.write('\n' + nb_user_url + '\n')
+    if '-c' in opts:
+        # Copy mode: We were passed either notebook.ipynb or path/to/notebook.ipynb
+        pathparts = ('/' + path.strip('/')).split('/')
+        from_nbname = pathparts[-1]
+        dirpath = urljoin(*pathparts[:-1])
+        sys.stderr.write('\n' + repr(pathparts) + '\n')
+        nbname = newnb(url, dirpath, copy=from_nbname)
+    else:
+        # We were passed the path to a directory in which to create a blank notebook.
+        dirpath = path
+        sys.stderr.write('\n' + dirpath + '\n')
+        nbname = newnb(url, dirpath)
+
+    nb_user_url = urljoin(url, 'notebooks', quote(urljoin(dirpath, nbname)))
 
     sys.stdout.write(nb_user_url)
     return 0

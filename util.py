@@ -12,6 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from urllib import quote
 from urllib2 import URLError
 from workflow import web
 
@@ -21,7 +22,7 @@ def urljoin(*args):
 def get_nblist(url, path=''):
     """Returns list of raw information about objects in 'path'"""
     try:
-        resp = web.get(urljoin(url, 'api/notebooks', path))
+        resp = web.get(urljoin(url, 'api/notebooks', quote(path)))
     except URLError:
         raise URLError('Unable to reach %s. Try the "nbserver" keyword.' % url)
     resp.raise_for_status()
