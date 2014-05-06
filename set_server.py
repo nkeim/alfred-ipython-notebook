@@ -17,8 +17,18 @@ import sys
 from workflow import Workflow
 
 def main(wf):
-    wf.settings['server'] = wf.args[0]
+    arg = wf.args[0]
+    try:
+        port = int(arg)
+    except ValueError:
+        newserv = arg
+    else:
+        newserv = 'http://localhost:%i' % port
+
+    wf.settings['server'] = newserv
     wf.clear_cache()
+
+    sys.stdout.write(newserv)  # For notification
     return 0
 
 if __name__ == '__main__':

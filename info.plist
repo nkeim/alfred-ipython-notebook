@@ -373,7 +373,7 @@ sys.stdout.write(nbpath)</string>
 				<key>keyword</key>
 				<string>nbserver</string>
 				<key>subtext</key>
-				<string>Supply argument, e.g. http://localhost:8888</string>
+				<string>Supply URL or port number, e.g. http://localhost:8888</string>
 				<key>text</key>
 				<string>Set IPython notebook server URL</string>
 				<key>withspace</key>
@@ -394,7 +394,7 @@ sys.stdout.write(nbpath)</string>
 				<key>script</key>
 				<string>python set_server.py "{query}"
 
-echo -n "{query}"</string>
+#echo -n "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
