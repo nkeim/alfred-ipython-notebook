@@ -13,6 +13,7 @@
 #   limitations under the License.
 
 import sys, getopt
+from urllib import quote
 
 from util import urljoin, get_all_notebooks
 
@@ -100,7 +101,9 @@ def main(wf):
             nburl = urljoin(nb['path'], nb['name']) + '/'
             subtitle = 'Make a copy of ' + nb_user_url
         else:
-            nburl = nb_user_url
+            # URL will be passed straight to opener, so must be quoted.
+            nburl = urljoin(url, 'notebooks', 
+                    quote(urljoin(nb['path'], nb['name']), '/'))
             subtitle = nb_user_url
         wf.add_item(title=nbname,
                 subtitle=subtitle,
