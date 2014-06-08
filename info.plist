@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>edu.upenn.seas.nkeim.ipynbworkflow</string>
+	<string>nkeim.ipynbworkflow</string>
 	<key>category</key>
 	<string>Productivity</string>
 	<key>connections</key>
