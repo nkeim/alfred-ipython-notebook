@@ -21,6 +21,8 @@ def urljoin(*args):
 
 def get_nblist(url, path=''):
     """Returns list of raw information about objects in 'path'"""
+    if isinstance(path, unicode):
+        path = path.encode('utf-8')
     try:
         resp = web.get(urljoin(url, 'api/notebooks', quote(path)))
     except URLError:

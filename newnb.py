@@ -32,7 +32,11 @@ def newnb(url, path, copy=None):
     # Compare directory contents before and after new notebook creation.
     names = [nb['name'] for nb in get_nblist(url, path) if nb['type'] == 'notebook']
 
-    post_url = urljoin(url, 'api/notebooks', quote(path)).strip('/')
+    arg = path
+    if isinstance(arg, unicode):
+        arg = arg.encode('utf-8')
+
+    post_url = urljoin(url, 'api/notebooks', quote(arg)).strip('/')
     if copy is not None:
         data = json.dumps({'copy_from': copy})
     else:
@@ -71,7 +75,10 @@ def main(wf):
         sys.stderr.write('\n' + dirpath + '\n')
         nbname = newnb(url, dirpath)
 
-    nb_user_url = urljoin(url, 'notebooks', quote(urljoin(dirpath, nbname)))
+    arg = urljoin(dirpath, nbname)
+    if isinstance(arg, unicode):
+        arg = arg.encode('utf-8')
+    nb_user_url = urljoin(url, 'notebooks', quote(arg))
 
     sys.stdout.write(nb_user_url)
     return 0
