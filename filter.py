@@ -102,8 +102,11 @@ def main(wf):
             subtitle = 'Make a copy of ' + nb_user_url
         else:
             # URL will be passed straight to opener, so must be quoted.
+            arg = urljoin(nb['path'], nb['name'])
+            if isinstance(arg, unicode):
+                arg = arg.encode('utf-8')
             nburl = urljoin(url, 'notebooks', 
-                    quote(urljoin(nb['path'], nb['name']), '/'))
+                    quote(arg, '/'))
             subtitle = nb_user_url
         wf.add_item(title=nbname,
                 subtitle=subtitle,
