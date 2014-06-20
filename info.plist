@@ -705,6 +705,6 @@ Official IPython site: http://ipython.org</string>
 		</dict>
 	</dict>
 	<key>webaddress</key>
-	<string>https://github.com/nkeim</string>
+	<string>https://github.com/nkeim/alfred-ipython-notebook</string>
 </dict>
 </plist>
