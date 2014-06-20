@@ -609,7 +609,9 @@ Caveat
 For performance reasons, the list of notebooks on the server is cached for 30 seconds. Therefore, it can take up to 30 seconds for a new or renamed notebook to show up in these results.
 
 
-Copyright 2013 Nathan C. Keim
+Copyright 2014 Nathan C. Keim
+
+For details and the latest version: https://github.com/nkeim/alfred-ipython-notebook
 
 Licensed under the Apache License, Version 2.0. For details, see filter.py in the source code.
 
