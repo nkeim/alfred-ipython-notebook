@@ -50,6 +50,8 @@ License and Credits
 
 Copyright 2014 Nathan C. Keim
 
+Contributions from Dean Jackson. See the [GitHub repository](https://github.com/nkeim/alfred-ipython-notebook) for details.
+
 Licensed under the Apache License, Version 2.0. For details, see `filter.py` in the source code.
 
 This workflow is built with the [Alfred-Workflow package](https://github.com/deanishe/alfred-workflow)
