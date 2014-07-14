@@ -287,9 +287,10 @@
 				<string>import sys
 
 from util import urljoin
+from urllib import unquote
 
 nburl = r"""{query}"""
-nbname = nburl.split('/')[-1]
+nbname = unquote(nburl.split('/')[-1])
 if nbname.endswith('.ipynb'):
 	nbname = nbname[:-len('.ipynb')]
 
